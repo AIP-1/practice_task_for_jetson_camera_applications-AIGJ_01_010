@@ -2,9 +2,34 @@
 
 Jetson Orin Nano와 USB 웹캠으로 진행한 EmbeddingGemma 2 실습의 카메라 응용 단계입니다. 웹캠 물체 추출과 텍스트 검색(8단계), 사람 동작·행동 인식(9단계), 카메라 2대 근접 알람(10단계)을 담았습니다.
 
-- 1~7단계(환경 구축, 텍스트·이미지·영상 임베딩, 성능 측정)는 [embedding_gemma2-AIGJ_01_010](https://github.com/AIP-1/embedding_gemma2-AIGJ_01_010) 저장소에 있습니다.
-- 실습 안내문은 [docs/guide_README.md](docs/guide_README.md)에 있습니다.
+- EmbeddingGemma 2 실습 1~10단계 전체는 [embedding_gemma2-AIGJ_01_010](https://github.com/AIP-1/embedding_gemma2-AIGJ_01_010) 저장소에 있습니다.
+- 과제 안내문: [jetson_with_vision](https://github.com/AIP-1/jetson_with_vision). EmbeddingGemma 2 실습 안내문: [docs/guide_README.md](docs/guide_README.md).
 - 공유 보드 B에서 팀원(AIGJ_01_004)과 함께 진행했습니다. 코드와 측정 기록은 같은 실험에서 나온 것이며, 팀 저장소는 [practice_task_for_jetson_camera_applications-AIGJ_01_004](https://github.com/AIP-1/practice_task_for_jetson_camera_applications-AIGJ_01_004)입니다.
+
+> ### 출처와 범위
+> - 이 저장소의 측정값은 모두 **EmbeddingGemma 2 실습 8~10단계**에서 잰 것입니다. 이 과제를 위해 새로 잰 값은 없습니다.
+> - 그 실습은 과제 안내문의 키트(`IP카메라 객체인식 실습/`, `스테레오 거리 실습/`, TensorRT 엔진, MQTT)를 쓰지 않았습니다. 그래서 겹치는 부분만 결과로 적고, **나머지는 "미수행"** 으로 적었습니다. 하지 않은 측정은 채워 넣지 않았습니다.
+
+## 과제별 상태
+
+| 과제 | 상태 | 한 것 (원래 단계) | 확인 기준 판정 | 보고서 |
+| :---: | --- | --- | --- | --- |
+| 1. 카메라 연동과 기준선 | **미수행** | 헤드리스 보드 결과를 브라우저로 보기만 함 | 판정 안 함 | [report §1](docs/report.md#과제-1-카메라-연동과-기준선) |
+| 2. 물체 인식 | **일부 수행** (8단계) | T1-8: COCO 밖 물체를 yolo / 임베딩 재라벨 / yoloe로 비교 | T1-8 불합격 (5종 중 2종), T1-1~7 미수행 | [report §2](docs/report.md#과제-2-물체-인식) |
+| 3. 재실 인원 카운터 | **미수행** | — | — | [report §3](docs/report.md#과제-3-재실-인원-카운터) |
+| 4. 행동 패턴 인식 | **수행** (9단계, 심화 B 포함) | raw vs 안정화, 행동 패턴 12회, 녹화, GRU 동작·행동 모델 | T3-6·T3-7·T3-8 합격, T3-1 미수행, T3-2~5 판정 못함 | [report §4](docs/report.md#과제-4-행동-패턴-인식) |
+| 5. 거리 측정 | **심화 B만 수행** (10단계) | T4-9 방 좌표계 근접 감지, 이동 타겟 TTC. 정렬형 스테레오는 안 함 | T4-9 합격, T4-0~8 미수행 | [report §5](docs/report.md#과제-5-거리-측정-웹캠-2대) |
+| 6. 응용 서비스 | **미수행** | 근접 알람 웹 화면까지만, MQTT·systemd·12시간 가동 없음 | — | [report §6](docs/report.md#과제-6-응용-서비스) |
+
+## 제출물
+
+| 제출물 | 파일 | 상태 |
+| --- | --- | --- |
+| 기능 시험 기록 | [runs/test_log.md](runs/test_log.md) | 안내문 T0~T4 ID별. 하지 않은 시험은 미수행 |
+| 결과 보고서 | [docs/report.md](docs/report.md) | 과제 2·4·5 결과, 1·3·6 미수행 |
+| 결과 형식 문서 | [docs/result_format.md](docs/result_format.md) | 실제로 있는 HTTP 조회 주소만. MQTT 토픽 없음 |
+| 응용 서비스 | — | **미수행** |
+| 원래 단계 기록 | [results/](results/), [reports/](reports/) | 8·9·10단계 측정 기록과 PDF 보고서 |
 
 ## 환경 (보드 B, team5-b)
 
@@ -53,7 +78,10 @@ prox/               10단계 두 카메라 근접 알람
   check/                카메라 위치 변화 확인 이미지
 results/            8, 9, 10단계 측정 결과
 reports/            PDF 보고서 (9단계, 10단계, 1~10단계 전체)
-docs/               실습 안내문
+runs/test_log.md    기능 시험 기록 (과제 안내문 T0~T4)
+docs/report.md      결과 보고서 (과제 1~6)
+docs/result_format.md  결과 형식 문서 (HTTP 조회 주소)
+docs/guide_README.md   EmbeddingGemma 2 실습 안내문
 ```
 
 ## 실행
