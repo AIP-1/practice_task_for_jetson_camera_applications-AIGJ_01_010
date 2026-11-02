@@ -1,25 +1,34 @@
-# Jetson 카메라 응용 실습 8~10단계 (AIGJ_01_010 박수연)
+# Jetson 카메라 응용 실습 (AIGJ_01_010 박수연)
 
-Jetson Orin Nano와 USB 웹캠으로 진행한 EmbeddingGemma 2 실습의 카메라 응용 단계입니다. 웹캠 물체 추출과 텍스트 검색(8단계), 사람 동작·행동 인식(9단계), 카메라 2대 근접 알람(10단계)을 담았습니다.
+Jetson Orin Nano와 USB 웹캠으로 진행한 EmbeddingGemma 2 실습 8~10단계(웹캠 물체 추출과 텍스트 검색, 사람 동작·행동 인식, 카메라 2대 근접 알람)를 카메라 응용 과제 1~6 형식으로 정리했습니다.
+
+![Jetson Orin Nano](https://img.shields.io/badge/Jetson-Orin_Nano_Super_8GB-green)
+![Python 3.12](https://img.shields.io/badge/Python-3.12-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.14.1%2Bcu132-orange)
+![Ultralytics](https://img.shields.io/badge/Ultralytics-8.4.184-blue)
 
 - EmbeddingGemma 2 실습 1~10단계 전체는 [embedding_gemma2-AIGJ_01_010](https://github.com/AIP-1/embedding_gemma2-AIGJ_01_010) 저장소에 있습니다.
 - 과제 안내문: [jetson_with_vision](https://github.com/AIP-1/jetson_with_vision). EmbeddingGemma 2 실습 안내문: [docs/guide_README.md](docs/guide_README.md).
 - 공유 보드 B에서 팀원(AIGJ_01_004)과 함께 진행했습니다. 코드와 측정 기록은 같은 실험에서 나온 것이며, 팀 저장소는 [practice_task_for_jetson_camera_applications-AIGJ_01_004](https://github.com/AIP-1/practice_task_for_jetson_camera_applications-AIGJ_01_004)입니다.
 
-> ### 출처와 범위
+> **출처와 범위**
 > - 이 저장소의 측정값은 모두 **EmbeddingGemma 2 실습 8~10단계**에서 잰 것입니다. 이 과제를 위해 새로 잰 값은 없습니다.
 > - 그 실습은 과제 안내문의 키트(`IP카메라 객체인식 실습/`, `스테레오 거리 실습/`, TensorRT 엔진, MQTT)를 쓰지 않았습니다. 그래서 겹치는 부분만 결과로 적고, **나머지는 "미수행"** 으로 적었습니다. 하지 않은 측정은 채워 넣지 않았습니다.
 
-## 과제별 상태
+---
 
-| 과제 | 상태 | 한 것 (원래 단계) | 확인 기준 판정 | 보고서 |
-| :---: | --- | --- | --- | --- |
-| 1. 카메라 연동과 기준선 | **미수행** | 헤드리스 보드 결과를 브라우저로 보기만 함 | 판정 안 함 | [report §1](docs/report.md#과제-1-카메라-연동과-기준선) |
-| 2. 물체 인식 | **일부 수행** (8단계) | T1-8: COCO 밖 물체를 yolo / 임베딩 재라벨 / yoloe로 비교 | T1-8 불합격 (5종 중 2종), T1-1~7 미수행 | [report §2](docs/report.md#과제-2-물체-인식) |
-| 3. 재실 인원 카운터 | **미수행** | — | — | [report §3](docs/report.md#과제-3-재실-인원-카운터) |
-| 4. 행동 패턴 인식 | **수행** (9단계, 심화 B 포함) | raw vs 안정화, 행동 패턴 12회, 녹화, GRU 동작·행동 모델 | T3-6·T3-7·T3-8 합격, T3-1 미수행, T3-2~5 판정 못함 | [report §4](docs/report.md#과제-4-행동-패턴-인식) |
-| 5. 거리 측정 | **심화 B만 수행** (10단계) | T4-9 방 좌표계 근접 감지, 이동 타겟 TTC. 정렬형 스테레오는 안 함 | T4-9 합격, T4-0~8 미수행 | [report §5](docs/report.md#과제-5-거리-측정-웹캠-2대) |
-| 6. 응용 서비스 | **미수행** | 근접 알람 웹 화면까지만, MQTT·systemd·12시간 가동 없음 | — | [report §6](docs/report.md#과제-6-응용-서비스) |
+## 결과 한눈에
+
+| 과제 | 내용 (원래 단계) | 핵심 결과 | 상태 | 보고서 |
+| :---: | --- | --- | :---: | --- |
+| 1 | 카메라 연동과 기준선 | 헤드리스 보드 결과를 브라우저로 보기만 함 | ⬜ 미수행 | [§1](docs/report.md#과제-1-카메라-연동과-기준선) |
+| 2 | 물체 인식 (8단계) | T1-8: COCO 밖 물체를 yolo / 임베딩 재라벨 / yoloe로 비교, yoloe 5종 중 2종(불합격). T1-1~7 미수행 | ⚠️ 일부 | [§2](docs/report.md#과제-2-물체-인식) |
+| 3 | 재실 인원 카운터 | — | ⬜ 미수행 | [§3](docs/report.md#과제-3-재실-인원-카운터) |
+| 4 | 행동 패턴 인식 (9단계, 심화 B 포함) | 행동 패턴 12/12, GRU 동작 모델 검증 0.989 (T3-6·7·8 합격). T3-1 미수행, T3-2~5 판정 못함 | ⚠️ 일부 | [§4](docs/report.md#과제-4-행동-패턴-인식) |
+| 5 | 거리 측정, 심화 B (10단계) | 검증점 오차 3.1 / 3.0 cm, 1 m 접근 알람 3/3 (T4-9 합격), 이동 타겟 TTC. 정렬형 스테레오 T4-0~8 미수행 | ⚠️ 일부 | [§5](docs/report.md#과제-5-거리-측정-웹캠-2대) |
+| 6 | 응용 서비스 | 근접 알람 웹 화면까지만, MQTT·systemd·12시간 가동 없음 | ⬜ 미수행 | [§6](docs/report.md#과제-6-응용-서비스) |
+
+---
 
 ## 제출물
 
@@ -31,6 +40,8 @@ Jetson Orin Nano와 USB 웹캠으로 진행한 EmbeddingGemma 2 실습의 카메
 | 응용 서비스 | — | **미수행** |
 | 원래 단계 기록 | [results/](results/), [reports/](reports/) | 8·9·10단계 측정 기록과 PDF 보고서 |
 
+---
+
 ## 환경 (보드 B, team5-b)
 
 | 항목 | 값 |
@@ -41,6 +52,8 @@ Jetson Orin Nano와 USB 웹캠으로 진행한 EmbeddingGemma 2 실습의 카메
 | 모델 | google/embeddinggemma-2 (bfloat16), yolo11n, yoloe-11s-seg, yolo11n-pose |
 | 카메라 | Logitech C920 2대 (/dev/video0, /dev/video2), 자동초점 끔 |
 
+---
+
 ## 진행 단계
 
 | 단계 | 내용 | 상태 |
@@ -48,6 +61,8 @@ Jetson Orin Nano와 USB 웹캠으로 진행한 EmbeddingGemma 2 실습의 카메
 | 8 | 웹캠 물체 추출과 웹 검색 (YOLO, 임베딩 재라벨, YOLOE 비교) | 완료 |
 | 9 | 사람 동작 인식(만세·한팔들기·손 흔들기·악수), 행동 패턴(관심도), GRU 학습 | 완료 |
 | 10 | 두 카메라 보정, ankle1·stereo·fused 거리 비교, 타겟 자동 찾기, 이동 타겟 충돌 알람 | 완료 |
+
+---
 
 ## 구조
 
@@ -59,6 +74,8 @@ USB 웹캠 → Jetson
 ```
 
 영상과 임베딩을 다른 스레드로 나누고 사이에 큐를 둬서, 임베딩이 느려도 영상은 15 fps로 계속 흐르게 했습니다. 사람 이미지는 크롭·저장하지 않고 좌표와 알람 기록만 남깁니다.
+
+---
 
 ## 폴더 구성
 
@@ -84,6 +101,8 @@ docs/result_format.md  결과 형식 문서 (HTTP 조회 주소)
 docs/guide_README.md   EmbeddingGemma 2 실습 안내문
 ```
 
+---
+
 ## 실행
 
 ```bash
@@ -95,6 +114,8 @@ cd prox && python proximity_app.py --cams 0 2 --target "brown cardboard box"    
 python proximity_app.py --cams 0 2 --target "brown cardboard box" --moving --ttc 3.0     # 10-8 이동 타겟
 # 브라우저: http://<Jetson IP>:8000
 ```
+
+---
 
 ## 주요 결과
 
@@ -138,7 +159,12 @@ python proximity_app.py --cams 0 2 --target "brown cardboard box" --moving --ttc
 
 자세한 측정값은 [results/](results/)와 [reports/](reports/)에 있습니다.
 
+---
+
 ## 트러블슈팅
+
+<details>
+<summary>문제 · 원인 · 해결 펼쳐 보기</summary>
 
 | 단계 | 문제 | 원인 | 해결 |
 | --- | --- | --- | --- |
@@ -152,12 +178,18 @@ python proximity_app.py --cams 0 2 --target "brown cardboard box" --moving --ttc
 | 10 | 이동 타겟이 10~14 m 밖으로 튐 | 상자를 카메라 높이에 가깝게 들어 시선이 수평 | 상자를 무릎~허리 높이로 |
 | 10 | 타겟이 바닥 아래·8 m 밖 | 보정 뒤 cam0이 약 6° 돌아감 | 보정 때 화면과 비교해 손으로 다시 맞춤 |
 
+</details>
+
+---
+
 ## 안내문과 다르게 한 점
 
 - `half=True` 제거 (위 표).
 - 9단계 `train_pose.py`: 표준편차 하한 `std.clamp(min=0.03)`.
 - 10단계 카메라는 `--cams 0 2`, 렌즈 보정은 태블릿 체커보드(칸 22 mm, `--square 0.022`).
 - 10단계 시나리오는 공간이 좁아 4 m 대신 3 m 자리에서 진행, 이동 타겟은 카트 대신 사람이 든 갈색 상자.
+
+---
 
 ## 한계와 다음 개선
 
