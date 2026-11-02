@@ -1,0 +1,13 @@
+2026-10-28 10-2 3rd attempt measurements (cm), origin=1
+1: 0 0 0
+2: -12 -32 0
+3: -40 -70 0
+4: -9 101 0
+5: 35 15 122
+6: 35 -100 122
+7: -86 -63 72
+ROOM (bbox+50cm): x -136..85, y -150..151 -> max dist from origin ~2.0m
+8: 12 264 -17  (sunken floor; 3m standing spot also sunken)
+cam0: -102 -252(? user wrote -2.52) 137
+cam1: 4 -295 144
+NOTE: P3/P4 labels were swapped between measurement and clicks -> swapped xyz in json (offline: cams within 5cm, ~4px)
